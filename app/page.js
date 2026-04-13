@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 export default function Home() {
   const [movies, setMovies] = useState([]);
   const [favorites, setFavorites] = useState([]);
-  const [search, setSearch] = useState("batman");
+  const [search, setSearch] = useState([]);
 
   useEffect(() => {
     fetch(`https://www.omdbapi.com/?s=${search}&apikey=b42aa8ac`)
