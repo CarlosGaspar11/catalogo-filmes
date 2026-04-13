@@ -1,65 +1,120 @@
-import Image from "next/image";
+"use client";
+
+import { useState, useEffect } from "react";
 
 export default function Home() {
+  const [movies, setMovies] = useState([]);
+  const [favorites, setFavorites] = useState([]);
+  const [search, setSearch] = useState("batman");
+
+  useEffect(() => {
+    fetch(`https://www.omdbapi.com/?s=${search}&apikey=b42aa8ac`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.Search) setMovies(data.Search);
+      });
+  }, [search]);
+
+  function handleFavorite(movie) {
+    const jaFavoritado = favorites.find((f) => f.imdbID === movie.imdbID);
+    if (jaFavoritado) {
+      setFavorites(favorites.filter((f) => f.imdbID !== movie.imdbID));
+    } else {
+      setFavorites([...favorites, movie]);
+    }
+  }
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.js file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <main style={{ padding: "2rem", fontFamily: "sans-serif" }}>
+      <h1>🎬 Catálogo de Filmes</h1>
+
+      {/* Campo de busca */}
+      <input
+        type="text"
+        placeholder="Buscar filme..."
+        onChange={(e) => setSearch(e.target.value)}
+        style={{
+          padding: "8px",
+          width: "300px",
+          marginBottom: "1.5rem",
+          fontSize: "16px",
+          border: "2px solid #7a7a7a",
+          borderRadius: "10px",
+          marginTop: "6px",
+        }}
+      />
+
+      {/* Lista de filmes */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))",
+          gap: "1rem",
+        }}
+      >
+        {movies.map((movie) => {
+          const favoritado = favorites.find((f) => f.imdbID === movie.imdbID);
+          return (
+            <div
+              key={movie.imdbID}
+              style={{
+                border: "1px solid #ddd",
+                borderRadius: "8px",
+                padding: "8px",
+                textAlign: "center",
+              }}
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+              <img
+                src={
+                  movie.Poster !== "N/A"
+                    ? movie.Poster
+                    : "https://via.placeholder.com/150"
+                }
+                alt={movie.Title}
+                width="100%"
+                style={{ borderRadius: "4px" }}
+              />
+              <p style={{ fontWeight: "bold", margin: "8px 0 4px" }}>
+                {movie.Title}
+              </p>
+              <p style={{ color: "#666", fontSize: "14px" }}>{movie.Year}</p>
+              <button
+                onClick={() => handleFavorite(movie)}
+                style={{
+                  marginTop: "8px",
+                  padding: "6px 12px",
+                  cursor: "pointer",
+                  background: favoritado ? "#f0c040" : "#eee",
+                  border: "none",
+                  borderRadius: "4px",
+                }}
+              >
+                {favoritado ? "★ Favoritado" : "☆ Favoritar"}
+              </button>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Seção de favoritos */}
+      {favorites.length > 0 && (
+        <div style={{ marginTop: "3rem" }}>
+          <h2>⭐ Meus Favoritos</h2>
+          <ul>
+            {favorites.map((f) => (
+              <li key={f.imdbID} style={{ marginBottom: "8px" }}>
+                {f.Title} ({f.Year})
+                <button
+                  onClick={() => handleFavorite(f)}
+                  style={{ marginLeft: "12px", cursor: "pointer" }}
+                >
+                  Remover
+                </button>
+              </li>
+            ))}
+          </ul>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+      )}
+    </main>
   );
 }
