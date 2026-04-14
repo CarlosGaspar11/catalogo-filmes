@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 export default function Home() {
   const [movies, setMovies] = useState([]);
   const [favorites, setFavorites] = useState([]);
-  const [search, setSearch] = useState("batman");
+  const [search, setSearch] = useState("");
   const apiKey = process.env.NEXT_PUBLIC_OMDB_API_KEY;
 
   useEffect(() => {
