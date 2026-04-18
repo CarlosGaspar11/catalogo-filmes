@@ -14,3 +14,6 @@ Funções:
 
 ## Link do site
 - https://catalogo-filmes-seven-wheat.vercel.app
+
+## LInk do GitHub
+- https://github.com/CarlosGaspar11/catalogo-filmes
