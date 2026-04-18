@@ -1,4 +1,4 @@
-## Para iniciar
+## Para iniciar localmente
 
 Primeiro, inicie o server
 ```bash
@@ -10,3 +10,7 @@ Abra [http://localhost:3000](http://localhost:3000) no navegador.
 Funções:
 - Pesquisar filme na barra de busca
 - Favotirar filmes e remover eles na sessão de favoritos
+
+
+## Link do site
+- https://catalogo-filmes-seven-wheat.vercel.app
